@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BookStation.Core\BookStation.Core.csproj" />
+    <ProjectReference Include="..\BookStation.Domain\BookStation.Domain.csproj" />
+    <ProjectReference Include="..\BookStation.Application\BookStation.Application.csproj" />
+    <ProjectReference Include="..\BookStation.Query\BookStation.Query.csproj" />
+    <ProjectReference Include="..\BookStation.Infrastructure\BookStation.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
