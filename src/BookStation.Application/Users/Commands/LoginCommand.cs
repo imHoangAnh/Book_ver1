@@ -14,9 +14,8 @@ public record LoginCommand(
 /// Response for login.
 /// </summary>
 public record LoginResponse(
-    long UserId,
+    Guid UserId,
     string Email,
     string Token,
-    DateTime ExpiresAt,
-    List<string> Roles
+    DateTime ExpiresAt
 );

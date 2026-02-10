@@ -7,7 +7,7 @@ namespace BookStation.Domain.Repositories;
 /// <summary>
 /// Repository interface for Order aggregate.
 /// </summary>
-public interface IOrderRepository : IWriteOnlyRepository<Order, long>
+public interface IOrderRepository : IRepository<Order, long>
 {
     /// <summary>
     /// Gets an order with its items.
@@ -28,4 +28,11 @@ public interface IOrderRepository : IWriteOnlyRepository<Order, long>
     /// Gets orders by status.
     /// </summary>
     Task<IEnumerable<Order>> GetByStatusAsync(EOrderStatus status, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks if a user has successfully purchased a specific book.
+    /// </summary>
+    Task<bool> HasUserPurchasedBookAsync(long userId, long bookId, CancellationToken cancellationToken = default);
+
+    Task UpdateAsync(Order order, CancellationToken cancellationToken = default);
 }

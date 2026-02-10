@@ -41,7 +41,8 @@ public class CreateBookCommandHandler : IRequestHandler<CreateBookCommand, Creat
             request.PublishYear,
             request.PublisherId,
             request.CoverImageUrl,
-            request.PageCount
+            request.PageCount,
+            request.SellerId
         );
 
         // Add authors

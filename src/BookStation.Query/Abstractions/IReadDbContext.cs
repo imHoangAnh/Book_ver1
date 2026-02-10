@@ -1,6 +1,7 @@
 using BookStation.Domain.Entities.CatalogAggregate;
 using BookStation.Domain.Entities.UserAggregate;
 using BookStation.Domain.Entities.OrderAggregate;
+using BookStation.Domain.Entities.VoucherAggregate;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookStation.Query.Abstractions;
@@ -18,4 +19,8 @@ public interface IReadDbContext
     DbSet<User> Users { get; }
     DbSet<Order> Orders { get; }
     DbSet<OrderItem> OrderItems { get; }
+    DbSet<Payment> Payments { get; }
+    DbSet<Voucher> Vouchers { get; }
+    DbSet<UserAddress> UserAddresses { get; }
 }
+

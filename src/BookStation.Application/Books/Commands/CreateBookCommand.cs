@@ -15,7 +15,8 @@ public record CreateBookCommand(
     string? CoverImageUrl,
     int? PageCount,
     List<long>? AuthorIds,
-    List<int>? CategoryIds
+    List<int>? CategoryIds,
+    Guid? SellerId = null
 ) : IRequest<CreateBookResponse>;
 
 /// <summary>

@@ -1,9 +1,8 @@
-using BookStation.Domain.Enums;
-
 namespace BookStation.Domain.Entities.CatalogAggregate;
 
 /// <summary>
 /// Junction entity for Book-Author many-to-many relationship.
+/// This represents main authors only. Translators and co-authors are stored as strings in Book.
 /// </summary>
 public class BookAuthor
 {
@@ -16,11 +15,6 @@ public class BookAuthor
     /// Gets the author ID.
     /// </summary>
     public long AuthorId { get; private set; }
-
-    /// <summary>
-    /// Gets the author's role in this book.
-    /// </summary>
-    public EAuthorRole Role { get; private set; }
 
     /// <summary>
     /// Gets the display order (for ordering multiple authors).
@@ -39,23 +33,21 @@ public class BookAuthor
     /// <summary>
     /// Creates a new book-author association.
     /// </summary>
-    internal static BookAuthor Create(long bookId, long authorId, EAuthorRole role = EAuthorRole.Author, int displayOrder = 1)
+    internal static BookAuthor Create(long bookId, long authorId, int displayOrder = 1)
     {
         return new BookAuthor
         {
             BookId = bookId,
             AuthorId = authorId,
-            Role = role,
             DisplayOrder = displayOrder
         };
     }
 
     /// <summary>
-    /// Updates the role and display order.
+    /// Updates the display order.
     /// </summary>
-    public void Update(EAuthorRole role, int displayOrder)
+    public void UpdateDisplayOrder(int displayOrder)
     {
-        Role = role;
         DisplayOrder = displayOrder;
     }
 }

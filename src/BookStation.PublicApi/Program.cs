@@ -1,10 +1,7 @@
 using BookStation.Application;
 using BookStation.Infrastructure;
 using BookStation.Infrastructure.Authentication;
-using BookStation.Infrastructure.Data;
-using BookStation.PublicApi.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -44,22 +41,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    // Register permission-based policies
-    options.AddPolicy("books.create", policy => 
-        policy.Requirements.Add(new PermissionRequirement("books.create")));
-    options.AddPolicy("books.update", policy => 
-        policy.Requirements.Add(new PermissionRequirement("books.update")));
-    options.AddPolicy("books.delete", policy => 
-        policy.Requirements.Add(new PermissionRequirement("books.delete")));
-    options.AddPolicy("orders.viewall", policy => 
-        policy.Requirements.Add(new PermissionRequirement("orders.viewall")));
-    // Add more policies as needed...
-});
-
-// Register permission authorization handler
-builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddAuthorization();
 
 // Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
@@ -120,9 +102,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-
-// Seed RBAC data (Roles & Permissions)
-await app.SeedRbacDataAsync();
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())

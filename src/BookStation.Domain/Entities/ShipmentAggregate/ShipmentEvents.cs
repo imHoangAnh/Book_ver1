@@ -28,18 +28,6 @@ public sealed class ShipmentCreatedEvent : ShipmentBaseEvent
     }
 }
 
-/// <summary>
-/// Event raised when a shipper is assigned.
-/// </summary>
-public sealed class ShipperAssignedEvent : ShipmentBaseEvent
-{
-    public long ShipperId { get; }
-
-    public ShipperAssignedEvent(long shipmentId, long shipperId) : base(shipmentId)
-    {
-        ShipperId = shipperId;
-    }
-}
 
 /// <summary>
 /// Event raised when a shipment is picked up.

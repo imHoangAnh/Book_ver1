@@ -3,9 +3,10 @@ using BookStation.Core.SharedKernel;
 namespace BookStation.Domain.Entities.CatalogAggregate;
 
 /// <summary>
-/// Author entity.
+/// Author entity - catalog data only.
+/// User identity verification is handled separately in UserAggregate.AuthorProfile.
 /// </summary>
-public class Author : Entity<long>
+public class Author : AggregateRoot<long>
 {
     /// <summary>
     /// Gets the author's full name.
@@ -38,11 +39,6 @@ public class Author : Entity<long>
     public string? Country { get; private set; }
 
     /// <summary>
-    /// Gets the user ID if the author has an account.
-    /// </summary>
-    public long? UserId { get; private set; }
-
-    /// <summary>
     /// Gets the author's photo URL.
     /// </summary>
     public string? PhotoUrl { get; private set; }
@@ -63,8 +59,7 @@ public class Author : Entity<long>
         string fullName,
         string? bio = null,
         DateTime? dateOfBirth = null,
-        string? country = null,
-        long? userId = null)
+        string? country = null)
     {
         if (string.IsNullOrWhiteSpace(fullName))
             throw new ArgumentException("Full name cannot be empty.", nameof(fullName));
@@ -74,8 +69,7 @@ public class Author : Entity<long>
             FullName = fullName.Trim(),
             Bio = bio?.Trim(),
             DateOfBirth = dateOfBirth,
-            Country = country?.Trim(),
-            UserId = userId
+            Country = country?.Trim()
         };
     }
 
@@ -101,15 +95,6 @@ public class Author : Entity<long>
         Address = address?.Trim();
         Country = country?.Trim();
         PhotoUrl = photoUrl;
-        UpdatedAt = DateTime.UtcNow;
-    }
-
-    /// <summary>
-    /// Links this author to a user account.
-    /// </summary>
-    public void LinkToUser(long userId)
-    {
-        UserId = userId;
         UpdatedAt = DateTime.UtcNow;
     }
 

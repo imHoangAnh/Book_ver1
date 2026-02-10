@@ -4,7 +4,7 @@ using BookStation.Domain.Entities.OrderAggregate;
 using BookStation.Domain.Entities.UserAggregate;
 using BookStation.Domain.Entities.VoucherAggregate;
 using BookStation.Domain.Entities.ShipmentAggregate;
-using BookStation.Domain.Entities.OrganizationAggregate;
+
 using BookStation.Domain.Entities.ReviewAggregate;
 using BookStation.Core.SharedKernel;
 using BookStation.Query.Abstractions;
@@ -28,14 +28,8 @@ public class WriteDbContext : DbContext, IUnitOfWork, IReadDbContext
 
     // User Aggregate
     public DbSet<User> Users => Set<User>();
-    public DbSet<Role> Roles => Set<Role>();
-    public DbSet<UserRole> UserRoles => Set<UserRole>();
     public DbSet<SellerProfile> SellerProfiles => Set<SellerProfile>();
-    public DbSet<ShipperProfile> ShipperProfiles => Set<ShipperProfile>();
-
-    // RBAC
-    public DbSet<Permission> Permissions => Set<Permission>();
-    public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+    public DbSet<UserAddress> UserAddresses => Set<UserAddress>();
 
     // Catalog Aggregate
     public DbSet<Book> Books => Set<Book>();
@@ -45,6 +39,8 @@ public class WriteDbContext : DbContext, IUnitOfWork, IReadDbContext
     public DbSet<Publisher> Publishers => Set<Publisher>();
     public DbSet<Inventory> Inventories => Set<Inventory>();
     public DbSet<InventoryReservation> InventoryReservations => Set<InventoryReservation>();
+    public DbSet<BookBundle> BookBundles => Set<BookBundle>();
+    public DbSet<BookBundleItem> BookBundleItems => Set<BookBundleItem>();
 
     // Order Aggregate
     public DbSet<Order> Orders => Set<Order>();
@@ -64,7 +60,7 @@ public class WriteDbContext : DbContext, IUnitOfWork, IReadDbContext
     public DbSet<Shipment> Shipments => Set<Shipment>();
 
     // Organization
-    public DbSet<Organization> Organizations => Set<Organization>();
+
 
     // Review & Social
     public DbSet<Review> Reviews => Set<Review>();

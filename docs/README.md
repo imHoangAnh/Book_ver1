@@ -8,10 +8,24 @@ Dự án này phục vụ như một template mẫu mực cho việc xây dựng
 
 Hệ thống tài liệu đầy đủ được đặt trong thư mục `docs/`:
 
-- **[Kiến Trúc Hệ Thống (Architecture)](docs/ARCHITECTURE.md)**: Chi tiết về Clean Architecture, phân chia Layer, và CQRS flow.
-- **[Cấu Trúc Dự Án (Project Structure)](docs/STRUCTURE.md)**: Giải thích cấu trúc thư mục và các file quan trọng.
-- **[Domain Model & Bounded Contexts](docs/DOMAIN.md)**: Chi tiết về các thực thể nghiệp vụ (Catalog, Sales, Identity...).
-- **[Hướng Dẫn Cài Đặt (Setup Guide)](docs/SETUP.md)**: Các bước chi tiết để cài đặt môi trường và chạy dự án.
+### Core Documentation
+- **[Kiến Trúc Hệ Thống (Architecture)](ARCHITECTURE.md)**: Chi tiết về Clean Architecture, phân chia Layer, và CQRS flow.
+- **[Cấu Trúc Dự Án (Project Structure)](STRUCTURE.md)**: Giải thích cấu trúc thư mục và các file quan trọng.
+- **[Domain Model & Bounded Contexts](DOMAIN.md)**: Chi tiết về các thực thể nghiệp vụ (Catalog, Sales, Identity...).
+- **[Hướng Dẫn Cài Đặt (Setup Guide)](SETUP.md)**: Các bước chi tiết để cài đặt môi trường và chạy dự án.
+
+### Authentication & Security
+- **[Auth API Complete Guide](AUTH_API_COMPLETE_GUIDE.md)**: Hướng dẫn đầy đủ về Authentication & Authorization
+- **[Password Logic Review](PASSWORD_LOGIC_REVIEW.md)**: Chi tiết về password hashing và security
+
+### Shipping Integration 🚚
+- **[Quick Start Guide](SHIPPING_QUICK_START.md)**: ⚡ Bắt đầu nhanh trong 15 phút
+- **[API Registration Guide](SHIPPING_API_REGISTRATION.md)**: 📖 Đăng ký và lấy API keys (GHN, GHTK, ViettelPost)
+- **[Integration Plan](SHIPPING_INTEGRATION_PLAN.md)**: 🏗️ Kế hoạch implement đầy đủ
+
+### Recent Changes
+- **[Author Verification Refactoring](AUTHOR_VERIFICATION_REFACTORING.md)**: Tách biệt catalog data và user verification
+- **[Shipper Role Removal](SHIPPER_REMOVAL.md)**: Xóa bỏ internal shipper, chuyển sang third-party providers
 
 ## 🚀 Tính Năng Chính
 

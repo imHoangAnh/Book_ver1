@@ -7,17 +7,14 @@ namespace BookStation.Domain.Entities.UserAggregate;
 /// <summary>
 /// Seller profile entity.
 /// </summary>
-public class SellerProfile : Entity<long>
+public class SellerProfile : Entity<Guid>
 {
     /// <summary>
     /// Gets a value indicating whether the seller is approved.
     /// </summary>
     public bool IsApproved { get; private set; }
 
-    /// <summary>
-    /// Gets the organization ID.
-    /// </summary>
-    public int? OrganizationId { get; private set; }
+
 
     /// <summary>
     /// Gets the seller's date of birth.
@@ -55,13 +52,12 @@ public class SellerProfile : Entity<long>
     /// <summary>
     /// Creates a new seller profile.
     /// </summary>
-    internal static SellerProfile Create(long userId, int? organizationId = null)
+    internal static SellerProfile Create(Guid userId)
     {
         return new SellerProfile
         {
             Id = userId, // Uses same ID as User
-            IsApproved = false,
-            OrganizationId = organizationId
+            IsApproved = false
         };
     }
 
@@ -103,12 +99,5 @@ public class SellerProfile : Entity<long>
         UpdatedAt = DateTime.UtcNow;
     }
 
-    /// <summary>
-    /// Assigns the seller to an organization.
-    /// </summary>
-    public void AssignToOrganization(int organizationId)
-    {
-        OrganizationId = organizationId;
-        UpdatedAt = DateTime.UtcNow;
-    }
+
 }

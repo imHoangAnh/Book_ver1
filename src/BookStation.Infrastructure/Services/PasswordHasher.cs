@@ -1,4 +1,5 @@
-using BookStation.Application.Users.Commands;
+using BookStation.Application.Services;
+using BookStation.Domain.ValueObjects;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
@@ -9,63 +10,56 @@ namespace BookStation.Infrastructure.Services;
 /// </summary>
 public class PasswordHasher : IPasswordHasher
 {
-    private const int SaltSize = 128 / 8;
-    private const int HashSize = 256 / 8;
-    private const int Iterations = 100000;
+    private const int WorkFactor = 12; // 2^12 iterations (~4096). Tăng số này nếu muốn chậm hơn (an toàn hơn)
 
-    public string HashPassword(string password)
+    /// <inheritdoc />
+    public PasswordHash HashPassword(Password password)
     {
-        if (string.IsNullOrEmpty(password))
+        if (password is null)
             throw new ArgumentNullException(nameof(password));
 
-        // Generate salt
-        byte[] salt = RandomNumberGenerator.GetBytes(SaltSize);
-
-        // Hash password
-        byte[] hash = KeyDerivation.Pbkdf2(
-            password: password,
-            salt: salt,
-            prf: KeyDerivationPrf.HMACSHA256,
-            iterationCount: Iterations,
-            numBytesRequested: HashSize);
-
-        // Combine salt and hash
-        byte[] hashBytes = new byte[SaltSize + HashSize];
-        Array.Copy(salt, 0, hashBytes, 0, SaltSize);
-        Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
-
-        return Convert.ToBase64String(hashBytes);
+        // BCrypt tự động handle salt, không cần generate thủ công
+        string hash = BCrypt.Net.BCrypt.HashPassword(password.Value, WorkFactor);
+        
+        return PasswordHash.FromHash(hash);
     }
 
-    public bool VerifyPassword(string password, string passwordHash)
+    /// <inheritdoc />
+    public bool VerifyPassword(string password, PasswordHash passwordHash)
     {
         if (string.IsNullOrEmpty(password))
             throw new ArgumentNullException(nameof(password));
 
-        if (string.IsNullOrEmpty(passwordHash))
+        if (passwordHash is null)
             throw new ArgumentNullException(nameof(passwordHash));
 
-        byte[] hashBytes = Convert.FromBase64String(passwordHash);
+        return VerifyPasswordInternal(password, passwordHash.Value);
+    }
 
-        // Extract salt
-        byte[] salt = new byte[SaltSize];
-        Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+    /// <inheritdoc />
+    public bool VerifyPassword(Password password, PasswordHash passwordHash)
+    {
+        if (password is null)
+            throw new ArgumentNullException(nameof(password));
 
-        // Hash the password with the extracted salt
-        byte[] hash = KeyDerivation.Pbkdf2(
-            password: password,
-            salt: salt,
-            prf: KeyDerivationPrf.HMACSHA256,
-            iterationCount: Iterations,
-            numBytesRequested: HashSize);
+        if (passwordHash is null)
+            throw new ArgumentNullException(nameof(passwordHash));
 
-        // Compare hashes
-        for (int i = 0; i < HashSize; i++)
+        return VerifyPasswordInternal(password.Value, passwordHash.Value);
+    }
+
+    private bool VerifyPasswordInternal(string password, string storedHash)
+    {
+        try 
         {
-            if (hashBytes[i + SaltSize] != hash[i])
-                return false;
+            // BCrypt.Verify tự động extract salt từ storedHash và so sánh
+            return BCrypt.Net.BCrypt.Verify(password, storedHash);
         }
-
-        return true;
+        catch (BCrypt.Net.SaltParseException)
+        {
+            // Nếu hash trong DB bị lỗi định dạng hoặc là hash cũ (PBKDF2) không tương thích
+            return false;
+        }
     }
 }
+

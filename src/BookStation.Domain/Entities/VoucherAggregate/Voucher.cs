@@ -10,9 +10,10 @@ namespace BookStation.Domain.Entities.VoucherAggregate;
 public class Voucher : AggregateRoot<long>
 {
     /// <summary>
-    /// Gets the organization ID (voucher belongs to a specific shop).
+    /// Gets the seller ID (voucher belongs to a specific shop/seller). 
+    /// Null means system-wide voucher (Admin).
     /// </summary>
-    public int? OrganizationId { get; private set; }
+    public Guid? SellerId { get; private set; }
 
     /// <summary>
     /// Gets the voucher code.
@@ -91,7 +92,7 @@ public class Voucher : AggregateRoot<long>
         Money? minOrderAmount = null,
         Money? maxDiscountAmount = null,
         int usageLimit = 0,
-        int? organizationId = null)
+        Guid? sellerId = null)
     {
         if (string.IsNullOrWhiteSpace(code))
             throw new ArgumentException("Code cannot be empty.", nameof(code));
@@ -121,7 +122,7 @@ public class Voucher : AggregateRoot<long>
             UsageLimit = usageLimit,
             UsageCount = 0,
             IsActive = true,
-            OrganizationId = organizationId
+            SellerId = sellerId
         };
     }
 

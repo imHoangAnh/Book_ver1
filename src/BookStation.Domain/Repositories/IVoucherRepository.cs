@@ -6,7 +6,7 @@ namespace BookStation.Domain.Repositories;
 /// <summary>
 /// Repository interface for Voucher aggregate.
 /// </summary>
-public interface IVoucherRepository : IWriteOnlyRepository<Voucher, long>
+public interface IVoucherRepository : IRepository<Voucher, long>
 {
     /// <summary>
     /// Gets a voucher by code.
@@ -22,4 +22,9 @@ public interface IVoucherRepository : IWriteOnlyRepository<Voucher, long>
     /// Gets active vouchers for an organization.
     /// </summary>
     Task<IEnumerable<Voucher>> GetActiveByOrganizationAsync(int organizationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets available vouchers that can be applied to an order.
+    /// </summary>
+    Task<IEnumerable<Voucher>> GetAvailableVouchersAsync(ValueObjects.Money orderAmount, long userId, CancellationToken cancellationToken = default);
 }

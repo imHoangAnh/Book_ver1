@@ -1,3 +1,4 @@
+using BookStation.Application.Services;
 using BookStation.Domain.Entities.UserAggregate;
 using BookStation.Domain.Repositories;
 using BookStation.Domain.ValueObjects;
@@ -29,16 +30,18 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             throw new InvalidOperationException($"Email '{request.Email}' is already registered.");
         }
 
-        // Create value objects
+        // Create value objects - Domain layer validates the values
         var email = Email.Create(request.Email);
-        PhoneNumber? phone = null;
-        if (!string.IsNullOrWhiteSpace(request.Phone))
-        {
-            phone = PhoneNumber.Create(request.Phone);
-        }
+        var phone = string.IsNullOrWhiteSpace(request.Phone) 
+            ? null 
+            : PhoneNumber.Create(request.Phone);
 
-        // Hash password
-        var passwordHash = _passwordHasher.HashPassword(request.Password);
+        // Create Password value object - throws ValidationException if invalid
+        // This ensures password validation rules are enforced at Domain level
+        var password = Password.Create(request.Password);
+
+        // Hash password using the service - returns PasswordHash value object
+        var passwordHash = _passwordHasher.HashPassword(password);
 
         // Create user entity
         var user = User.Create(email, passwordHash, request.FullName, phone);
@@ -49,7 +52,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
         // Save user
         await _userRepository.AddAsync(user, cancellationToken);
 
-        return new RegisterUserResponse(
+        return new RegisterUserResponse(    
             user.Id,
             user.Email.Value,
             user.IsVerified
@@ -57,11 +60,3 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     }
 }
 
-/// <summary>
-/// Interface for password hashing service.
-/// </summary>
-public interface IPasswordHasher
-{
-    string HashPassword(string password);
-    bool VerifyPassword(string password, string passwordHash);
-}

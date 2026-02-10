@@ -6,7 +6,7 @@ namespace BookStation.Domain.Repositories;
 /// <summary>
 /// Repository interface for Cart aggregate.
 /// </summary>
-public interface ICartRepository : IWriteOnlyRepository<Cart, long>
+public interface ICartRepository : IRepository<Cart, long>
 {
     /// <summary>
     /// Gets the active cart for a user.

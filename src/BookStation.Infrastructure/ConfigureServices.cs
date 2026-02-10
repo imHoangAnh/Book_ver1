@@ -1,6 +1,8 @@
+using BookStation.Application.Services;
 using BookStation.Application.Users.Commands;
 using BookStation.Core.SharedKernel;
 using BookStation.Domain.Repositories;
+using BookStation.Infrastructure.Authentication;
 using BookStation.Infrastructure.Persistence;
 using BookStation.Infrastructure.Repositories;
 using BookStation.Infrastructure.Services;
@@ -48,11 +50,19 @@ public static class ConfigureServices
 
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        // Add other repositories here...
+        services.AddScoped<IUserAddressRepository, UserAddressRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
 
         // Services
         services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+        // Cloudinary Image Upload Service
+        services.Configure<CloudinarySettings>(configuration.GetSection(CloudinarySettings.SectionName));
+        services.AddScoped<IImageUploadService, CloudinaryService>();
+
+        // VNPay Payment Service
+        services.Configure<VnPaySettings>(configuration.GetSection(VnPaySettings.SectionName));
+        services.AddScoped<IPaymentService, VnPayService>();
 
         // Dapper Query Services (for complex raw SQL queries)
         services.AddScoped<DapperQueryService>();
@@ -64,3 +74,4 @@ public static class ConfigureServices
         return services;
     }
 }
+

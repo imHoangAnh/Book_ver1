@@ -22,22 +22,14 @@ public enum EBookStatus
 }
 
 /// <summary>
-/// Book author role in the book.
+/// Type of book bundle.
 /// </summary>
-public enum EAuthorRole
+public enum EBundleType
 {
-    /// <summary>Main author.</summary>
-    Author = 0,
+    /// <summary>Fixed set of books - customer buys the whole set.</summary>
+    BundleSet = 0,
 
-    /// <summary>Editor.</summary>
-    Editor = 1,
-
-    /// <summary>Illustrator.</summary>
-    Illustrator = 2,
-
-    /// <summary>Translator.</summary>
-    Translator = 3,
-
-    /// <summary>Co-author.</summary>
-    CoAuthor = 4
+    /// <summary>Combo promotion - customer chooses books from eligible list.</summary>
+    Combo = 1
 }
+

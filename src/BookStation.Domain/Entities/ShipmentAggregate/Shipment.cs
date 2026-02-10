@@ -14,11 +14,6 @@ public class Shipment : AggregateRoot<long>
     public long OrderId { get; private set; }
 
     /// <summary>
-    /// Gets the shipper user ID.
-    /// </summary>
-    public long? ShipperId { get; private set; }
-
-    /// <summary>
     /// Gets the shipment status.
     /// </summary>
     public EShipmentStatus Status { get; private set; }
@@ -68,17 +63,6 @@ public class Shipment : AggregateRoot<long>
         shipment.AddDomainEvent(new ShipmentCreatedEvent(shipment));
 
         return shipment;
-    }
-
-    /// <summary>
-    /// Assigns a shipper to this shipment.
-    /// </summary>
-    public void AssignShipper(long shipperId)
-    {
-        ShipperId = shipperId;
-        UpdatedAt = DateTime.UtcNow;
-
-        AddDomainEvent(new ShipperAssignedEvent(Id, shipperId));
     }
 
     /// <summary>

@@ -4,16 +4,13 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
+using BookStation.Application.Services;
+
 namespace BookStation.Infrastructure.Authentication;
 
 /// <summary>
-/// JWT token generator service.
+/// JWT token generator service implementation.
 /// </summary>
-public interface IJwtTokenGenerator
-{
-    string GenerateToken(long userId, string email, IEnumerable<string> roles, IEnumerable<string>? permissions = null);
-}
-
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
     private readonly JwtSettings _jwtSettings;
@@ -23,11 +20,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _jwtSettings = jwtSettings.Value;
     }
 
-    public string GenerateToken(
-        long userId,
-        string email,
-        IEnumerable<string> roles,
-        IEnumerable<string>? permissions = null)
+    public string GenerateToken(Guid userId, string email)
     {
         var claims = new List<Claim>
         {
@@ -36,15 +29,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(ClaimTypes.NameIdentifier, userId.ToString()),
         };
-
-        // Add roles
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-        // Add permissions (for permission-based authorization)
-        if (permissions != null)
-        {
-            claims.AddRange(permissions.Select(permission => new Claim("permission", permission)));
-        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

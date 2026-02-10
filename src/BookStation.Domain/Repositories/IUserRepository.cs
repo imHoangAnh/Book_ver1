@@ -6,7 +6,7 @@ namespace BookStation.Domain.Repositories;
 /// <summary>
 /// Repository interface for User aggregate.
 /// </summary>
-public interface IUserRepository : IWriteOnlyRepository<User, long>
+public interface IUserRepository : IRepository<User, Guid>
 {
     /// <summary>
     /// Gets a user by email.
@@ -21,10 +21,11 @@ public interface IUserRepository : IWriteOnlyRepository<User, long>
     /// <summary>
     /// Gets a user with their roles.
     /// </summary>
-    Task<User?> GetWithRolesAsync(long id, CancellationToken cancellationToken = default);
+    Task<User?> GetWithRolesAsync(Guid id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets a user with their seller profile.
     /// </summary>
-    Task<User?> GetWithSellerProfileAsync(long id, CancellationToken cancellationToken = default);
+    Task<User?> GetWithSellerProfileAsync(Guid id, CancellationToken cancellationToken = default);
 }
+    

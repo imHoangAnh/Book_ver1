@@ -1,11 +1,12 @@
 using BookStation.Core.SharedKernel;
+using BookStation.Domain.ValueObjects;
 
 namespace BookStation.Domain.Entities.ReviewAggregate;
 
 /// <summary>
 /// Review entity for book reviews.
 /// </summary>
-public class Review : Entity<long>
+public class Review : AggregateRoot<long>
 {
     /// <summary>
     /// Gets the book ID.
@@ -20,7 +21,7 @@ public class Review : Entity<long>
     /// <summary>
     /// Gets the rating (1-5).
     /// </summary>
-    public int Rating { get; private set; }
+    public Rating Rating { get; private set; } = null!;
 
     /// <summary>
     /// Gets the review content.
@@ -58,14 +59,11 @@ public class Review : Entity<long>
     public static Review Create(
         long bookId,
         long userId,
-        int rating,
+        Rating rating,
         string? content = null,
         bool hasSpoiler = false,
         bool isAnonymous = false)
     {
-        if (rating < 1 || rating > 5)
-            throw new ArgumentException("Rating must be between 1 and 5.", nameof(rating));
-
         return new Review
         {
             BookId = bookId,
@@ -82,11 +80,8 @@ public class Review : Entity<long>
     /// <summary>
     /// Updates the review.
     /// </summary>
-    public void Update(int rating, string? content, bool hasSpoiler)
+    public void Update(Rating rating, string? content, bool hasSpoiler)
     {
-        if (rating < 1 || rating > 5)
-            throw new ArgumentException("Rating must be between 1 and 5.", nameof(rating));
-
         Rating = rating;
         Content = content?.Trim();
         HasSpoiler = hasSpoiler;

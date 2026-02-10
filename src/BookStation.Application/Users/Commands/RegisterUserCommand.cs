@@ -8,7 +8,8 @@ namespace BookStation.Application.Users.Commands;
 public record RegisterUserCommand(
     string Email,
     string Password,
-    string? FullName = null,
+    string ConfirmPassword,
+    string FullName,
     string? Phone = null
 ) : IRequest<RegisterUserResponse>;
 
@@ -16,7 +17,7 @@ public record RegisterUserCommand(
 /// Response for user registration.
 /// </summary>
 public record RegisterUserResponse(
-    long UserId,
+    Guid UserId,
     string Email,
     bool IsVerified
 );

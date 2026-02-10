@@ -29,9 +29,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 .HasDatabaseName("IX_Users_Email");
         });
 
-        builder.Property(u => u.PasswordHash)
-            .HasMaxLength(500)
-            .IsRequired();
+        // PasswordHash value object
+        builder.OwnsOne(u => u.PasswordHash, passwordHash =>
+        {
+            passwordHash.Property(p => p.Value)
+                .HasColumnName("PasswordHash")
+                .HasMaxLength(500)
+                .IsRequired();
+        });
 
         builder.Property(u => u.FullName)
             .HasMaxLength(255);
@@ -51,23 +56,53 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasConversion<string>()
             .HasMaxLength(50);
 
+        builder.Property(u => u.Bio)
+            .HasMaxLength(500);
+
+        builder.Property(u => u.AvatarUrl)
+            .HasMaxLength(500);
+
+        builder.Property(u => u.Gender)
+            .HasConversion<string>()
+            .HasMaxLength(20);
+
+        builder.Property(u => u.DateOfBirth);
+
+        // Address value object (owned)
+        builder.OwnsOne(u => u.Address, address =>
+        {
+            address.Property(a => a.Street)
+                .HasColumnName("Street")
+                .HasMaxLength(200);
+
+            address.Property(a => a.Ward)
+                .HasColumnName("Ward")
+                .HasMaxLength(100);
+
+            address.Property(a => a.District)
+                .HasColumnName("District")
+                .HasMaxLength(100);
+
+            address.Property(a => a.City)
+                .HasColumnName("City")
+                .HasMaxLength(100);
+
+            address.Property(a => a.Country)
+                .HasColumnName("Country")
+                .HasMaxLength(100);
+
+            address.Property(a => a.PostalCode)
+                .HasColumnName("PostalCode")
+                .HasMaxLength(20);
+        });
+
         builder.Property(u => u.CreatedAt)
             .HasDefaultValueSql("GETUTCDATE()");
 
         // Relationships
-        builder.HasMany(u => u.UserRoles)
-            .WithOne(ur => ur.User)
-            .HasForeignKey(ur => ur.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasOne(u => u.SellerProfile)
             .WithOne(sp => sp.User)
             .HasForeignKey<SellerProfile>(sp => sp.Id)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasOne(u => u.ShipperProfile)
-            .WithOne(sp => sp.User)
-            .HasForeignKey<ShipperProfile>(sp => sp.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         // Ignore domain events

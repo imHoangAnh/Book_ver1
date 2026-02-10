@@ -1,5 +1,4 @@
 using BookStation.Core.SharedKernel;
-using BookStation.Domain.Enums;
 using BookStation.Domain.ValueObjects;
 
 namespace BookStation.Domain.Entities.CatalogAggregate;
@@ -40,6 +39,11 @@ public class Book : AggregateRoot<long>
     public long? PublisherId { get; private set; }
 
     /// <summary>
+    /// Gets the seller ID.
+    /// </summary>
+    public Guid? SellerId { get; private set; }
+
+    /// <summary>
     /// Gets the book status.
     /// </summary>
     public EBookStatus Status { get; private set; }
@@ -53,6 +57,16 @@ public class Book : AggregateRoot<long>
     /// Gets the number of pages.
     /// </summary>
     public int? PageCount { get; private set; }
+
+    /// <summary>
+    /// Gets the translator name(s). Optional, stored as comma-separated string.
+    /// </summary>
+    public string? Translator { get; private set; }
+
+    /// <summary>
+    /// Gets the co-author name(s). Optional, stored as comma-separated string.
+    /// </summary>
+    public string? CoAuthor { get; private set; }
 
     // Navigation properties
     public Publisher? Publisher { get; private set; }
@@ -82,7 +96,8 @@ public class Book : AggregateRoot<long>
         int? publishYear = null,
         long? publisherId = null,
         string? coverImageUrl = null,
-        int? pageCount = null)
+        int? pageCount = null,
+        Guid? sellerId = null)
     {
         if (string.IsNullOrWhiteSpace(title))
             throw new ArgumentException("Title cannot be empty.", nameof(title));
@@ -97,6 +112,7 @@ public class Book : AggregateRoot<long>
             PublisherId = publisherId,
             CoverImageUrl = coverImageUrl,
             PageCount = pageCount,
+            SellerId = sellerId,
             Status = EBookStatus.Draft
         };
 
@@ -135,6 +151,17 @@ public class Book : AggregateRoot<long>
     }
 
     /// <summary>
+    /// Updates the book cover image.
+    /// </summary>
+    public void UpdateCoverImage(string coverImageUrl)
+    {
+        CoverImageUrl = coverImageUrl;
+        UpdatedAt = DateTime.UtcNow;
+
+        AddDomainEvent(new BookUpdatedEvent(Id));
+    }
+
+    /// <summary>
     /// Adds a variant to the book.
     /// </summary>
     public BookVariant AddVariant(string variantName, Money price)
@@ -163,14 +190,32 @@ public class Book : AggregateRoot<long>
     }
 
     /// <summary>
-    /// Adds an author to the book.
+    /// Adds a main author to the book.
     /// </summary>
-    public void AddAuthor(long authorId, EAuthorRole role = EAuthorRole.Author, int displayOrder = 1)
+    public void AddAuthor(long authorId, int displayOrder = 1)
     {
         if (_bookAuthors.Any(ba => ba.AuthorId == authorId))
             return;
 
-        _bookAuthors.Add(BookAuthor.Create(Id, authorId, role, displayOrder));
+        _bookAuthors.Add(BookAuthor.Create(Id, authorId, displayOrder));
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Sets the translator name(s).
+    /// </summary>
+    public void SetTranslator(string? translator)
+    {
+        Translator = translator?.Trim();
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Sets the co-author name(s).
+    /// </summary>
+    public void SetCoAuthor(string? coAuthor)
+    {
+        CoAuthor = coAuthor?.Trim();
         UpdatedAt = DateTime.UtcNow;
     }
 
